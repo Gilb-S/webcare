@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Categories</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .filter-container {
+            margin: 20px;
+            text-align: center;
+        }
+        .filter-container button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .filter-container button:hover {
+            background-color: #0056b3;
+        }
+        .filter-container button.active {
+            background-color: #28a745;
+        }
+        .animal-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+            gap: 20px;
+        }
+        .animal-card {
+            width: 200px;
+            padding: 15px;
+            text-align: center;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            display: none; /* Hidden initially */
+        }
+        .animal-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="filter-container">
+    <button class="filter-button active" data-category="all">All</button>
+    <button class="filter-button" data-category="dogs">Dogs</button>
+    <button class="filter-button" data-category="cats">Cats</button>
+    <button class="filter-button" data-category="birds">Birds</button>
+</div>
+
+<div class="animal-container">
+    <div class="animal-card" data-category="dogs">
+        <img src="dog1.jpg" alt="Dog 1">
+        <h3>Golden Retriever</h3>
+    </div>
+    <div class="animal-card" data-category="cats">
+        <img src="cat1.jpg" alt="Cat 1">
+        <h3>Siamese Cat</h3>
+    </div>
+    <div class="animal-card" data-category="birds">
+        <img src="bird1.jpg" alt="Bird 1">
+        <h3>Parrot</h3>
+    </div>
+    <div class="animal-card" data-category="dogs">
+        <img src="dog2.jpg" alt="Dog 2">
+        <h3>Beagle</h3>
+    </div>
+    <div class="animal-card" data-category="cats">
+        <img src="cat2.jpg" alt="Cat 2">
+        <h3>Persian Cat</h3>
+    </div>
+</div>
+
+<script>
+    // JavaScript for dynamic filtering
+    const buttons = document.querySelectorAll('.filter-button');
+    const cards = document.querySelectorAll('.animal-card');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove "active" class from all buttons
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Get the selected category
+            const category = button.getAttribute('data-category');
+
+            // Show or hide cards based on category
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block'; // Show
+                } else {
+                    card.style.display = 'none'; // Hide
+                }
+            });
+        });
+    });
+
+    // Show all cards initially
+    document.querySelector('.filter-button[data-category="all"]').click();
+</script>
+
+</body>
+</html>

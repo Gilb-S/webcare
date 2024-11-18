@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Register Form</title>
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-wrapper {
+            text-align: center;
+        }
+
+        .form-title h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+        }
+
+        .button-link {
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button-link:hover {
+            background: #0056b3;
+        }
+
+        #toggle-text {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        #toggle-text a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #toggle-text a:hover {
+            text-decoration: underline;
+        }
+
+        #email-group, #phone-group, #confirm-password-group {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="form-container" class="form-wrapper">
+            <div class="form-title">
+                <h2 id="form-header">Login</h2>
+            </div>
+            <form id="auth-form">
+                <div class="input-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="input-group" id="email-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email">
+                </div>
+                <div class="input-group" id="phone-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <div class="input-group" id="confirm-password-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password">
+                </div>
+                <button type="submit" class="button-link">Submit</button>
+            </form>
+            <p id="toggle-text">
+                Don't have an account? <a href="#" id="toggle-link">Register here</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const formHeader = document.getElementById('form-header');
+        const authForm = document.getElementById('auth-form');
+        const toggleLink = document.getElementById('toggle-link');
+        const emailGroup = document.getElementById('email-group');
+        const phoneGroup = document.getElementById('phone-group');
+        const confirmPasswordGroup = document.getElementById('confirm-password-group');
+
+        toggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            clearInputs();
+            if (formHeader.textContent === 'Login') {
+                formHeader.textContent = 'Register';
+                emailGroup.style.display = 'block';
+                phoneGroup.style.display = 'block';
+                confirmPasswordGroup.style.display = 'block';
+                toggleLink.textContent = 'Login here';
+            } else {
+                resetToLogin();
+            }
+        });
+
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmPassword = document.getElementById('confirm-password').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            if (formHeader.textContent === 'Login') {
+               
+                const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+                const user = storedUsers.find(user => user.name === name && user.password === password);
+                if (user) {
+                    alert('Login successful!');
+                    window.location.href = 'adoption.html'; 
+                } else {
+                    alert('Invalid credentials.');
+                }
+            } else {
+             
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match.');
+                    return;
+                }
+
+                const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+                const existingUser = storedUsers.find(user => user.name === name);
+                if (existingUser) {
+                    alert('User already exists. Please log in.');
+                } else {
+                    const newUser = { name, password, email, phone };
+                    storedUsers.push(newUser);
+                    localStorage.setItem('users', JSON.stringify(storedUsers));
+                    alert('Registration successful! Please log in.');
+                    resetToLogin();
+                }
+            }
+        });
+
+        function clearInputs() {
+            const inputs = authForm.querySelectorAll('input');
+            inputs.forEach(input => input.value = '');
+        }
+
+        function resetToLogin() {
+            formHeader.textContent = 'Login';
+            emailGroup.style.display = 'none';
+            phoneGroup.style.display = 'none';
+            confirmPasswordGroup.style.display = 'none';
+            toggleLink.textContent = 'Register here';
+            clearInputs();
+        }
+
+    </script>
+</body>
+</html>

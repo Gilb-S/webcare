@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h2 {
+            margin: 20px 0;
+            font-size: 2rem;
+            text-align: center;
+            color: #444;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        #submissionsContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .submission {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .submission .info {
+            flex: 1;
+            text-align: left;
+            margin-left: 50px;
+        }
+
+        .submission .pet {
+            flex: 0 0 300px;
+            text-align: center;
+            margin-right: 800px;
+        }
+
+        .submission p {
+            margin: 8px 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .submission img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .submission button {
+            padding: 10px 15px;
+            margin: 10px 5px 0 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .approve-btn {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .approve-btn:hover {
+            background-color: #218838;
+        }
+
+        .decline-btn {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .decline-btn:hover {
+            background-color: red;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            font-size: 1em;
+            text-decoration: none;
+            color: white;
+            background-color: #dc3545;
+            border-radius: 8px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <h2>Admin Dashboard</h2>
+    <div id="submissionsContainer"></div>
+    <a href="homepage.html" class="back-button">Back to Home</a>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const submissionsContainer = document.getElementById("submissionsContainer");
+
+            let submissions = JSON.parse(localStorage.getItem("formData")) || [];
+
+            function renderSubmissions() {
+                submissionsContainer.innerHTML = '';
+
+                if (submissions.length > 0) {
+                    submissions.forEach((submission, index) => {
+                        const petData = submission.pet || {};
+
+                        const div = document.createElement("div");
+                        div.classList.add("submission");
+                        div.innerHTML = `
+                            <div class="info">
+                                <p><strong>Name:</strong> ${submission.name}</p>
+                                <p><strong>Email:</strong> ${submission.email}</p>
+                                <p><strong>Address:</strong> ${submission.address}</p>
+                                <p><strong>Postal:</strong> ${submission.postal}</p>
+                                <p><strong>Country:</strong> ${submission.country}</p>
+                                <p><strong>Interest:</strong> ${submission.interest}</p>
+                                <p><strong>Subscribe:</strong> ${submission.subscribe ? "Yes" : "No"}</p>
+                            </div>
+                            <div class="pet">
+                                ${
+                                    petData.image
+                                        ? `<strong>Selected Pet:</strong><br>
+                                           <img src="${petData.image}" alt="${petData.name}"><br>
+                                           <strong>Name:</strong> ${petData.name}<br>
+                                           <p>${petData.description}</p>`
+                                        : ''
+                                }
+                                <button class="approve-btn" onclick="approveSubmission(${index})">Approve</button>
+                                <button class="decline-btn" onclick="declineSubmission(${index})">Decline</button>
+                            </div>
+                        `;
+                        submissionsContainer.appendChild(div);
+                    });
+                } else {
+                    submissionsContainer.innerHTML = "<p>No submissions yet.</p>";
+                }
+            }
+
+            window.approveSubmission = function(index) {
+                alert(`Submission approved.`);
+                removeSubmission(index);
+            };
+
+            window.declineSubmission = function(index) {
+                alert(`Submission declined.`);
+                removeSubmission(index);
+            };
+
+            function removeSubmission(index) {
+                submissions.splice(index, 1);
+                localStorage.setItem("formData", JSON.stringify(submissions));
+                renderSubmissions();
+            }
+
+            renderSubmissions();
+        });
+    </script>
+</body>
+</html>
